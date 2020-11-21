@@ -23,6 +23,7 @@ import '@material/textfield/dist/mdc.textfield.css';
 import locationsService from '../services/locations';
 
 const NewLocationForm = ({ newLocationCoords, toggleInfoBar }) => {
+  const [testInput, setTestInput] = useState('');
   const [servicesChecked, setServicesChecked] = useState({
     inva: false,
     child: false,
@@ -47,6 +48,12 @@ const NewLocationForm = ({ newLocationCoords, toggleInfoBar }) => {
       left: 0,
     },
   }
+
+  const handleTestInput = (e) => {
+    setTestInput(e.target.value);
+  }
+
+  console.log(testInput);
 
   const handleNewLocation = (e) => {
     const { name, value } = e.target;
@@ -91,8 +98,6 @@ const NewLocationForm = ({ newLocationCoords, toggleInfoBar }) => {
     }
   };
 
-  console.log(newLocation);
-
   const addNewLocation = async (e) => {
     e.preventDefault();
     await locationsService.createNewLocation(newLocation);
@@ -102,6 +107,14 @@ const NewLocationForm = ({ newLocationCoords, toggleInfoBar }) => {
   return (
     <div className="infobar-container" style={styles.container}>
       <form onSubmit={addNewLocation} style={{ display: 'flex', flexDirection: 'column' }}>
+      <TextField
+          className="new-location-test-input"
+          label="test"
+          name="test"
+          value={testInput}
+          onChange={(e) => handleTestInput(e)}
+          color="#fff"
+        />
         <TextField
           className="new-location-name-input"
           label="Nimi"
