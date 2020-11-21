@@ -9,6 +9,7 @@ const getValidatedLocations = async () => {
 
 const getPendingLocations = async () => {
   const response = await axios.get(`${baseUrl}/pending-locations`);
+  console.log(response.data);
   return response.data;
 }
 

@@ -1,30 +1,21 @@
 import React, { useEffect, useState } from 'react';
+import { useLoadScript } from '@react-google-maps/api';
 import { Route, Switch } from 'react-router-dom';
-
+import Map from './components/Map';
 import locationService from './services/locations';
-
-import icon from './assets/icon.png';
 import Navigation from './components/Navigation';
-import InfoBar from './components/infoBar';
+import NewLocationForm from './components/NewLocationForm';
+import NearestLocations from './components/NearestLocations';
 import Login from './pages/Login';
-import { GoogleMap, useLoadScript, Marker } from '@react-google-maps/api';
-import mapStyles from './mapStyles';
 import './App.css';
 
-const options = {
-  styles: mapStyles,
-  disableDefaultUI: true,
-  zoomControl: true,
-  // gestureHandling: 'none',
-};
-
 const App = () => {
-  const [currentLocation, setCurrentLocation] = useState({ lat: 65.012615, lng: 25.471453 });
-  const [zoom, setZoom] = useState(5);
-  const [geoLocationGranted, setGeoLocationGranted] = useState(false);
+  const [userLocation, setUserLocation] = useState({ lat: 65.012615, lng: 25.471453 });
   const [newLocationCoords, setNewLocationCoords] = useState({});
   const [locations, setLocations] = useState([]);
+  const [selectedLocation, setSelectedLocation] = useState(null);
   const [showInfoBar, setShowInfoBar] = useState(false);
+  const [zoom, setZoom] = useState(5);
   const [longPress, setLongPress] = useState(false);
 
   const { isLoaded, loadError } = useLoadScript({
@@ -32,95 +23,95 @@ const App = () => {
   });
 
   useEffect(() => {
-    const getAllLocations = async () => {
-      const response = await locationService.getValidatedLocations();
-      setLocations(locations.filter((location) => response.validated));
-    };
-    getAllLocations();
-  }, []);
-
-  useEffect(() => {
-    // if ('geolocation' in navigator) {
-    //   navigator.geolocation.getCurrentPosition((position) => {
-    //     if (position.coords) {
-    //       console.log(
-    //         `CURRENT: Lat: ${position.coords.latitude}, Long: ${position.coords.longitude}`
-    //       );
-    //     }
-
-    //     // if (position.coords) {
-    //     setCurrentLocation({
-    //       lat: +position.coords.latitude,
-    //       lng: +position.coords.longitude,
-    //     });
-    //     // }
-    //   });
-    // } else {
-    //   console.log('Not Available');
-    // }
-    handlePermission();
-  }, []);
-
-  function handlePermission() {
-    navigator.permissions.query({ name: 'geolocation' }).then(function (result) {
+    const handlePermission = async () => {
+      const result = await navigator.permissions.query({ name: 'geolocation' });
       if (result.state === 'granted') {
-        report(result.state);
-        // setGeoLocationGranted(true);
         navigator.geolocation.getCurrentPosition((position) => {
-          setCurrentLocation({
+          console.log(position);
+          setUserLocation({
             lat: +position.coords.latitude,
             lng: +position.coords.longitude,
           });
         });
         setZoom(16);
-        changeCenter();
-      } else if (result.state === 'prompt') {
-        report(result.state);
-        // setGeoLocationGranted(true);
+      }
+
+      if (result.state === 'prompt') {
         navigator.geolocation.getCurrentPosition((position) => {
-          setCurrentLocation({
+          setUserLocation({
             lat: +position.coords.latitude,
             lng: +position.coords.longitude,
           });
           setZoom(16);
         });
-      } else if (result.state === 'denied') {
-        report(result.state);
       }
-      result.onchange = function () {
-        report(result.state);
-      };
-    });
-  }
+    };
+    handlePermission();
+  }, []);
 
-  const changeCenter = () => {
-    console.log('changed');
+  useEffect(() => {
+    const getAllLocations = async () => {
+      const response = await locationService.getValidatedLocations();
+      const locationsWithDistances = response.map(calculateDistances);
+      setLocations(locations.concat(locationsWithDistances).sort((a, b) => a.distance - b.distance ));
+    };
+    getAllLocations();
+  }, [userLocation]);
+
+  const calculateDistances = (location) => {
+    let distance = 0;
+    const R = 6371;
+
+    const dLat = toRad(userLocation.lat - location.lat);
+    const dLon = toRad(userLocation.lng - location.lng);
+    const lat1 = toRad(location.lat);
+    const lat2 = toRad(userLocation.lat);
+
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    distance = R * c;
+
+    if (distance < 1000) {
+      distance = distance * 1000;
+    }
+
+    location.distance = distance;
+
+    return location;
   };
 
-  function report(state) {
-    console.log('Permission ' + state);
+  const toRad = (value) => {
+    return (value * Math.PI) / 180;
   }
 
-  if (loadError) return 'Error';
-  if (!isLoaded) return <div>Loading...</div>;
-
-  const setLocation = (e) => {
+  const setNewLocation = (e) => {
     const place = {
       lat: e.latLng.lat(),
       lng: e.latLng.lng(),
     };
-    console.log(place);
+    setLocations(locations.concat(place));
     setNewLocationCoords(place);
     setShowInfoBar(!showInfoBar);
   };
 
-  // const defaultCenter = {
-  //   lat: 65.012615,
-  //   lng: 25.471453,
-  // };
+  const toggleInfoBar = () => {
+    setShowInfoBar(!showInfoBar);
+  };
 
-  // currentLocation ? { lat: +currentLocation.lat, lng: +currentLocation.lng } :
-  // zoom={currentLocation ? 5 : 16}
+  const selectLocation = (location) => {
+    setSelectedLocation(location);
+  };
+
+  if (loadError) {
+    return 'Error';
+  }
+
+  if (!isLoaded) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="app">
       <Navigation />
@@ -128,34 +119,23 @@ const App = () => {
         <Login />
       </Route>
       <Route path="/" exact>
-        <GoogleMap
-          mapContainerStyle={{ width: '100vw', height: '92vh' }}
+        <Map
           zoom={zoom}
-          // zoom={geoLocationGranted ? 16 : 5}
-          center={
-            // geoLocationGranted
-            //   ? { lat: currentLocation.lat, lng: currentLocation.lng }
-            //   :
-            currentLocation
-          }
-          options={options}
-          onDblClick={(e) => setLocation(e)}
-          // ref={(map) => map && map.panTo({lat: currentLocation.lat, lng: currentLocation.lng})}
-          // onCenterChanged={changeCenter}
-        >
-          {locations.map((place) => (
-            <Marker
-              key={place.lat}
-              className="marker"
-              position={{ lat: place.lat, lng: place.lng }}
-              icon={{
-                scaledSize: new window.google.maps.Size(30, 30),
-                url: icon,
-              }}
-            />
-          ))}
-          {showInfoBar && <InfoBar newLocationCoords={newLocationCoords} />}
-        </GoogleMap>
+          selectedLocation={selectedLocation}
+          userLocation={userLocation}
+          locations={locations}
+          selectLocation={selectLocation}
+          setNewLocation={setNewLocation}
+        />
+        {showInfoBar ? (
+          <NewLocationForm newLocationCoords={newLocationCoords} toggleInfoBar={toggleInfoBar} />
+        ) : (
+          <NearestLocations
+            selectedLocation={selectedLocation}
+            selectLocation={selectLocation}
+            locations={locations}
+          />
+        )}
       </Route>
     </div>
   );

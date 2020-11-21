@@ -1,0 +1,53 @@
+oikea:
+
+latitude: 65.0236908
+longitude: 25.4733916
+
+65.0236908, 25.4733916
+
+
+  function handlePermission() {
+    navigator.permissions.query({ name: 'geolocation' }).then(function (result) {
+      if (result.state === 'granted') {
+        report(result.state);
+        // setGeoLocationGranted(true);
+        navigator.geolocation.getCurrentPosition((position) => {
+          console.log(position);
+          setCurrentLocation({
+            lat: +position.coords.latitude,
+            lng: +position.coords.longitude,
+          });
+        });
+        setZoom(16);
+        changeCenter();
+      } else if (result.state === 'prompt') {
+        report(result.state);
+        // setGeoLocationGranted(true);
+        navigator.geolocation.getCurrentPosition((position) => {
+          setCurrentLocation({
+            lat: +position.coords.latitude,
+            lng: +position.coords.longitude,
+          });
+          setZoom(16);
+        });
+      } else if (result.state === 'denied') {
+        report(result.state);
+      }
+      result.onchange = function () {
+        report(result.state);
+      };
+    });
+  }
+
+
+ETÄISYYSTESTI:
+
+MK1 = {
+  lat: 65.02439335732501
+  lng: 25.473861805845218
+}
+
+MK2 = {
+  lat: 65.02350058564645
+  lng: 25.477824647233575
+}
