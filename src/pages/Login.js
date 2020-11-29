@@ -1,9 +1,9 @@
 import React from 'react';
 // import React, { useState } from 'react';
 
-const Login = () => {
+const Login = () => (
   // useState!! useState on reactin hookki (hooks), katsokaa esimerkkejä, joissa ei ole class syntaksi
-  // const [email, setEmail] = useState('') 
+  // const [email, setEmail] = useState('')
   // email = muuttuja, johon tila tallennetaan
   // setEmail = functio, jolla tilaa muutetaan
   // setEmail('esimerkkiteksi') // nyt tila on seimerkkiteksti
@@ -15,17 +15,14 @@ const Login = () => {
   // TOISTA SAMA KAIKILLE INPUTEILLE
   // CONTROLLED COMPONENTS
 
-  return (
-    // KOODIA
-      <form>
-        {/* <input value={email} onChange={(e) => handleEmail(e)} /> */}
-        {/* input arvo on sidottu value attribuuttiin
+  // KOODIA
+  <form>
+    {/* <input value={email} onChange={(e) => handleEmail(e)} /> */}
+    {/* input arvo on sidottu value attribuuttiin
             onChange eventhandleriin on tehty funktio (handleri), jota kutsutaan aina inpun arvon muuttuessa
             handlerille välitetään event objekti, jonka kautta päästään käsiksi input arvoon (value)
             e.target.value = inpun arvo
         */}
-      </form>
-  );
-};
-
+  </form>
+);
 export default Login;

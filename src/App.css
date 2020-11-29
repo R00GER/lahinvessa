@@ -10,25 +10,22 @@ dark: '#0A95A8'
   box-sizing: border-box;
 }
 
-.new-location-name-input::placeholder {
-  color: #fff;
-};
-
 button {
+  padding: .6rem;
   border: none;
-}
-
-.btn-add {
-  font-weight: bold;
-  width: 200px;
-  padding: 1rem;
-  border: none;
-  border-radius: 15px;
-  color: #0A95A8;
-  background-color: #fff;
+  border-radius: 5px;
   box-shadow: 0 4px 4px #00000040;
 }
 
-.poop-icon {
-  stroke: 'white'
+.btn-add {
+  width: 150px;
+  color: #0A95A8;
+  background-color: #fff;
+}
+
+.btn-cancel {
+  border: 1px solid #0A95A8 !important;
+  background-color: #85cad4;
+  color: #0A95A8;
+  width: 150px;
 }

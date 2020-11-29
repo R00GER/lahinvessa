@@ -2,9 +2,8 @@ import React from 'react';
 
 const PoopIcon = () => (
   <svg
-  className="poop-icon"
+    className="poop-icon"
     id="Capa_1"
-    // enableBackground="new 0 0 512 512"
     height="25"
     viewBox="0 0 512 512"
     width="25"

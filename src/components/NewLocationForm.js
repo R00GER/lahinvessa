@@ -1,29 +1,33 @@
 import React, { useState } from 'react';
-import { Button } from '@rmwc/button';
-import '@material/button/dist/mdc.button.css';
-import { Checkbox } from '@rmwc/checkbox';
-import '@material/checkbox/dist/mdc.checkbox.css';
-// import { FormField } from '@rmwc/formfield';
-import { TextField } from '@rmwc/textfield';
-import '@material/textfield/dist/mdc.textfield.css';
-import { Radio } from '@rmwc/radio';
-import '@material/radio/dist/mdc.radio.css';
+import PropTypes from 'prop-types';
+import TextField from '@material-ui/core/TextField';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormLabel from '@material-ui/core/FormLabel';
+import FormGroup from '@material-ui/core/FormGroup';
+import Radio from '@material-ui/core/Radio';
+import Checkbox from '@material-ui/core/Checkbox';
+// import Grid from '@material-ui/core/Grid';
 
 import WcIcon from '@material-ui/icons/Wc';
 import RestaurantIcon from '@material-ui/icons/Restaurant';
 import HotelIcon from '@material-ui/icons/Hotel';
 import FreeBreakfastIcon from '@material-ui/icons/FreeBreakfast';
-import ApartmentIcon from '@material-ui/icons/Apartment';
+// import ApartmentIcon from '@material-ui/icons/Apartment';
 import NotListedLocationIcon from '@material-ui/icons/NotListedLocation';
 import AccessibleIcon from '@material-ui/icons/Accessible';
 import ChildFriendlyIcon from '@material-ui/icons/ChildFriendly';
 
-import '@material/textfield/dist/mdc.textfield.css';
-// import '@rmwc/textfield/styles';
 import locationsService from '../services/locations';
+import '../App.css';
 
-const NewLocationForm = ({ newLocationCoords, toggleInfoBar }) => {
-  const [testInput, setTestInput] = useState('');
+const NewLocationForm = ({
+  newLocationCoords,
+  toggleInfoBar,
+  buttonLabelAdd,
+  buttonLabelCancel,
+  removePlaceholderLocation,
+}) => {
   const [servicesChecked, setServicesChecked] = useState({
     inva: false,
     child: false,
@@ -36,24 +40,25 @@ const NewLocationForm = ({ newLocationCoords, toggleInfoBar }) => {
     validated: false,
     lat: newLocationCoords.lat,
     lng: newLocationCoords.lng,
+    rating: 3,
+    ratings: 0,
   });
 
   const styles = {
     container: {
+      display: 'grid',
+      gridTemplateColumns: '1fr',
+      gridTemplateRows: 'auto',
       backgroundColor: '#85cad4',
-      height: '50vh',
+      paddingRight: '1rem',
+      paddingLeft: '1rem',
+      height: '45vh',
       width: '100%',
       position: 'absolute',
       bottom: 0,
       left: 0,
     },
-  }
-
-  const handleTestInput = (e) => {
-    setTestInput(e.target.value);
-  }
-
-  console.log(testInput);
+  };
 
   const handleNewLocation = (e) => {
     const { name, value } = e.target;
@@ -71,7 +76,9 @@ const NewLocationForm = ({ newLocationCoords, toggleInfoBar }) => {
         ...newLocation,
         services: newLocation.services.concat(value),
       });
-    } else if (value === 'inva' && newLocation.services.includes('inva')) {
+    }
+
+    if (value === 'inva' && newLocation.services.includes('inva')) {
       setNewLocation({
         ...newLocation,
         services: newLocation.services.filter((service) => service !== value),
@@ -83,7 +90,9 @@ const NewLocationForm = ({ newLocationCoords, toggleInfoBar }) => {
         ...newLocation,
         services: newLocation.services.concat(value),
       });
-    } else if (value === 'child' && newLocation.services.includes('child')) {
+    }
+
+    if (value === 'child' && newLocation.services.includes('child')) {
       setNewLocation({
         ...newLocation,
         services: newLocation.services.filter((service) => service !== value),
@@ -104,149 +113,175 @@ const NewLocationForm = ({ newLocationCoords, toggleInfoBar }) => {
     toggleInfoBar();
   };
 
+  const resetNewLocation = () => {
+    removePlaceholderLocation({ lat: newLocation.lat, lng: newLocation.lng });
+    setNewLocation({
+      name: '',
+      type: '',
+      payable: '',
+      services: [],
+      validated: false,
+      lat: newLocationCoords.lat,
+      lng: newLocationCoords.lng,
+      rating: 3,
+      ratings: 0,
+    });
+    toggleInfoBar();
+  };
+
   return (
     <div className="infobar-container" style={styles.container}>
       <form onSubmit={addNewLocation} style={{ display: 'flex', flexDirection: 'column' }}>
-      <TextField
-          className="new-location-test-input"
-          label="test"
-          name="test"
-          value={testInput}
-          onChange={(e) => handleTestInput(e)}
-          color="#fff"
-        />
         <TextField
           className="new-location-name-input"
           label="Nimi"
           name="name"
           value={newLocation.name}
-          size="12"
-          style={{ backgroundColor: '#85cad4', marginBottom: '.5rem' }}
+          size="small"
+          style={{ backgroundColor: '#85cad4', margin: '.5rem 0 .5rem 0' }}
           onChange={(e) => handleNewLocation(e)}
-          color="#fff"
+          variant="outlined"
+          required
         />
-        <div>
-          <div style={{ color: '#fff', paddingLeft: '1rem' }}>
-            <strong>Tyyppi</strong>
-          </div>
-          <div
-            style={{
-              display: 'flex',
-              padding: '.5rem',
-            }}
-          >
-            <Radio
+        <div style={{ marginTop: '.5rem' }}>
+          <FormLabel component="legend" style={{ color: '#fff' }}>
+            Tyyppi
+          </FormLabel>
+          <RadioGroup style={{ justifyContent: 'space-around' }} row>
+            <FormControlLabel
+              control={<Radio style={{ color: '#fff' }} />}
               name="type"
               value="public"
               checked={newLocation.type === 'public'}
               onChange={(e) => handleNewLocation(e)}
-              style={{ display: 'flex', alignItems: 'center', color: '#fff', outline: '#fff' }}
-            >
-              <WcIcon />
-            </Radio>
-            <Radio
+              label={<WcIcon style={{ color: '#fff' }} />}
+              size="small"
+            />
+            <FormControlLabel
+              control={<Radio style={{ color: '#fff' }} />}
               name="type"
               value="restaurant"
               checked={newLocation.type === 'restaurant'}
               onChange={(e) => handleNewLocation(e)}
-              style={{ display: 'flex', alignItems: 'center', color: '#fff' }}
-            >
-              <RestaurantIcon />
-            </Radio>
-            <Radio
+              label={<RestaurantIcon style={{ color: '#fff' }} />}
+              size="small"
+            />
+            <FormControlLabel
+              control={<Radio style={{ color: '#fff' }} />}
               name="type"
               value="hotel"
               checked={newLocation.type === 'hotel'}
               onChange={(e) => handleNewLocation(e)}
-              style={{ display: 'flex', alignItems: 'center', color: '#fff' }}
-            >
-              <HotelIcon />
-            </Radio>
-            <Radio
+              label={<HotelIcon style={{ color: '#fff' }} />}
+              size="small"
+            />
+            <FormControlLabel
+              control={<Radio style={{ color: '#fff' }} />}
               name="type"
               value="cafe"
               checked={newLocation.type === 'cafe'}
               onChange={(e) => handleNewLocation(e)}
-              style={{ display: 'flex', alignItems: 'center', color: '#fff' }}
-            >
-              <FreeBreakfastIcon />
-            </Radio>
-            <Radio
-              name="type"
-              value="shopping"
-              checked={newLocation.type === 'shopping'}
-              onChange={(e) => handleNewLocation(e)}
-              style={{ display: 'flex', alignItems: 'center', color: '#fff' }}
-            >
-              <ApartmentIcon />
-            </Radio>
-            <Radio
+              label={<FreeBreakfastIcon style={{ color: '#fff' }} />}
+              size="small"
+            />
+            <FormControlLabel
+              control={<Radio style={{ color: '#fff' }} />}
               name="type"
               value="other"
               checked={newLocation.type === 'other'}
               onChange={(e) => handleNewLocation(e)}
-              style={{ display: 'flex', alignItems: 'center', color: '#fff' }}
-            >
-              <NotListedLocationIcon />
-            </Radio>
-          </div>
-          <div style={{ color: '#fff', paddingLeft: '1rem' }}>
-            <strong>Lisäpalvelut</strong>
-          </div>
-          <div
-            style={{
-              display: 'flex',
-              padding: '.5rem',
-            }}
-          >
-            <Checkbox
-              name="service"
-              value="inva"
-              checked={servicesChecked.inva}
-              onChange={(e) => handleNewLocation(e)}
-              style={{ display: 'flex', alignItems: 'center', color: '#fff', outline: '#fff' }}
-            >
-              <AccessibleIcon />
-            </Checkbox>
-            <Checkbox
-              name="service"
-              value="child"
-              checked={servicesChecked.child}
-              onChange={(e) => handleNewLocation(e)}
-              style={{ display: 'flex', alignItems: 'center', color: '#fff' }}
-            >
-              <ChildFriendlyIcon />
-            </Checkbox>
-          </div>
-          <div style={{ display: 'flex', color: '#fff', padding: '.5rem' }}>
-            <Radio
-              name="payable"
-              value={'payable'}
-              checked={newLocation.payable === 'payable'}
-              onChange={(e) => handleNewLocation(e)}
-              style={{ display: 'flex', alignItems: 'center', marginRight: '1rem' }}
-            >
-              Maksullinen
-            </Radio>
-            <Radio
-              name="payable"
-              value={'free'}
-              checked={newLocation.payable === 'free'}
-              onChange={(e) => handleNewLocation(e)}
-              style={{ display: 'flex', alignItems: 'center' }}
-            >
-              Maksuton
-            </Radio>
+              label={<NotListedLocationIcon style={{ color: '#fff' }} />}
+              size="small"
+            />
+          </RadioGroup>
+        </div>
+        <div style={{ marginTop: '.5rem' }}>
+          <FormLabel component="legend" style={{ color: '#fff' }}>
+            Lisäpalvelut
+          </FormLabel>
+          <FormGroup row>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  style={{ color: '#fff' }}
+                  name="service"
+                  value="inva"
+                  checked={servicesChecked.inva}
+                  onChange={(e) => handleNewLocation(e)}
+                />
+              }
+              label={<AccessibleIcon style={{ color: '#fff' }} />}
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  name="service"
+                  value="child"
+                  checked={servicesChecked.child}
+                  onChange={(e) => handleNewLocation(e)}
+                  style={{ color: '#fff' }}
+                />
+              }
+              label={<ChildFriendlyIcon style={{ color: '#fff' }} />}
+            />
+          </FormGroup>
+          <div style={{ color: '#fff', marginTop: '.5rem' }}>
+            <RadioGroup row>
+              <FormControlLabel
+                control={
+                  <Radio
+                    name="payable"
+                    value="payable"
+                    checked={newLocation.payable === 'payable'}
+                    onChange={(e) => handleNewLocation(e)}
+                    style={{ color: '#fff' }}
+                  />
+                }
+                label="Maksullinen"
+                style={{ fontWeight: 300 }}
+              />
+              <FormControlLabel
+                control={
+                  <Radio
+                    name="payable"
+                    value="free"
+                    checked={newLocation.payable === 'free'}
+                    onChange={(e) => handleNewLocation(e)}
+                    style={{ color: '#fff' }}
+                  />
+                }
+                label="Maksuton"
+                style={{ fontWeight: 300 }}
+              />
+            </RadioGroup>
           </div>
         </div>
-        <div style={{ margin: '0 auto', marginTop: '1rem' }}>
-          <button className="btn btn-add" type="submit">
-            Lisää vessa
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-around',
+            paddingTop: '1.5rem',
+            fontWeight: 300,
+          }}
+        >
+          <button className="btn-add" type="submit">
+            {buttonLabelAdd}
+          </button>
+          <button className="btn-cancel" type="button" onClick={resetNewLocation}>
+            {buttonLabelCancel}
           </button>
         </div>
       </form>
     </div>
   );
+};
+
+NewLocationForm.propTypes = {
+  newLocationCoords: PropTypes.instanceOf(Object).isRequired,
+  toggleInfoBar: PropTypes.func.isRequired,
+  buttonLabelAdd: PropTypes.string.isRequired,
+  buttonLabelCancel: PropTypes.string.isRequired,
+  removePlaceholderLocation: PropTypes.func.isRequired,
 };
 
 export default NewLocationForm;

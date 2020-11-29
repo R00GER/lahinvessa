@@ -5,19 +5,17 @@
   "dependencies": {
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.56",
+    "@material-ui/styles": "^4.11.1",
     "@react-google-maps/api": "^1.9.12",
-    "@rmwc/button": "^6.1.4",
-    "@rmwc/checkbox": "^6.1.4",
-    "@rmwc/formfield": "^6.1.4",
-    "@rmwc/radio": "^6.1.4",
-    "@rmwc/textfield": "^6.1.4",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "axios": "^0.20.0",
+    "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-places-autocomplete": "^7.3.0",
+    "react-icons": "^4.1.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3"
   },
@@ -41,5 +39,16 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "eslint": "^6.6.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-prettier": "^6.15.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-react": "^7.21.5",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "prettier": "^2.2.0"
   }
 }
