@@ -1,7 +1,10 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import MenuIcon from '@material-ui/icons/Menu';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
-const Navigation = () => {
+const Navigation = ({ handleShowSidebar }) => {
   const styles = {
     container: {
       position: 'fixed',
@@ -9,6 +12,7 @@ const Navigation = () => {
       left: 0,
       display: 'flex',
       alignItems: 'center',
+      justifyContent: 'space-between',
       width: '100%',
       height: '8vh',
       padding: '0 .5rem 0 .5rem',
@@ -31,9 +35,16 @@ const Navigation = () => {
 
   return (
     <div className="navigation-container" style={styles.container}>
-      <MenuIcon style={styles.menuIcon} fontSize="large" />
+      <MenuIcon onClick={handleShowSidebar} style={styles.menuIcon} fontSize="large" />
+      <Link to="/login">
+        <AccountCircleIcon style={styles.menuIcon} fontSize="large" />
+      </Link>
     </div>
   );
+};
+
+Navigation.propTypes = {
+  handleShowSidebar: PropTypes.func.isRequired,
 };
 
 export default Navigation;

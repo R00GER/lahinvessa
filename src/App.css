@@ -18,7 +18,7 @@ button {
 }
 
 .btn-add {
-  width: 150px;
+  width: 100px;
   color: #0A95A8;
   background-color: #fff;
 }
@@ -27,5 +27,19 @@ button {
   border: 1px solid #0A95A8 !important;
   background-color: #85cad4;
   color: #0A95A8;
-  width: 150px;
+  width: 100px;
+}
+
+.login {
+  text-align: center;
+  color: #0A95A8;
+  margin: 100px;
+}
+
+.otsikko {
+  margin: 10px;
+}
+
+.labelit {
+  margin: 10px;
 }

@@ -1,28 +1,77 @@
-import React from 'react';
-// import React, { useState } from 'react';
+import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import loginService from '../services/login';
+import locationsService from '../services/locations';
 
-const Login = () => (
-  // useState!! useState on reactin hookki (hooks), katsokaa esimerkkejä, joissa ei ole class syntaksi
-  // const [email, setEmail] = useState('')
-  // email = muuttuja, johon tila tallennetaan
-  // setEmail = functio, jolla tilaa muutetaan
-  // setEmail('esimerkkiteksi') // nyt tila on seimerkkiteksti
+const Login = ({ handleUser }) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-  // const handleEmail = (e) => {
-  //   setEmail(e.target.value) emailin tila on nyt se mitä input kenttään syötetään
-  // }
+  const history = useHistory();
 
-  // TOISTA SAMA KAIKILLE INPUTEILLE
-  // CONTROLLED COMPONENTS
+  const handleEmail = (e) => {
+    setEmail(e.target.value);
+  };
 
-  // KOODIA
-  <form>
-    {/* <input value={email} onChange={(e) => handleEmail(e)} /> */}
-    {/* input arvo on sidottu value attribuuttiin
-            onChange eventhandleriin on tehty funktio (handleri), jota kutsutaan aina inpun arvon muuttuessa
-            handlerille välitetään event objekti, jonka kautta päästään käsiksi input arvoon (value)
-            e.target.value = inpun arvo
-        */}
-  </form>
-);
+  const handlePassword = (e) => {
+    setPassword(e.target.value);
+  };
+
+  const login = async (e) => {
+    e.preventDefault();
+
+    const user = {
+      email,
+      password,
+    };
+
+    const response = await loginService.login(user);
+
+    if (response.token) {
+      history.push('/');
+      handleUser(user);
+      locationsService.setToken(response.token);
+    }
+  };
+
+  return (
+    <div>
+      <form onSubmit={login} className="login">
+        <div>
+          <h1 className="otsikko">Kirjaudu sisään</h1>
+          <label htmlFor="email">
+            Käyttäjätunnus:
+            <input
+              className="labelit"
+              name="email"
+              type="text"
+              required
+              value={email}
+              onChange={(e) => handleEmail(e)}
+            />
+          </label>
+        </div>
+        <div>
+          <label htmlFor="password">
+            Salasana:
+            <input
+              className="labelit"
+              name="password"
+              type="password"
+              required
+              value={password}
+              onChange={(e) => handlePassword(e)}
+            />
+          </label>
+        </div>
+        <div>
+          <button type="submit" className="btn-add">
+            Kirjaudu sisään
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+};
+
 export default Login;

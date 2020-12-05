@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { GoogleMap, Marker } from '@react-google-maps/api';
+import { GoogleMap, Marker, useLoadScript } from '@react-google-maps/api';
 import userIcon from '../assets/location.png';
 import icon from '../assets/poop1.png';
 import mapStyles from '../mapStyles';
@@ -8,21 +8,20 @@ import mapStyles from '../mapStyles';
 const options = {
   styles: mapStyles,
   disableDefaultUI: true,
-  zoomControl: true,
+  // zoomControl: true,
+  // zoomControlOptions: {
+  //   position: google.maps.ControlPosition.LEFT_CENTER,
+  // },
   disableDoubleClickZoom: true,
 };
 
-const Map = ({
-  zoom,
-  setNewLocation,
-  userLocation,
-  locations,
-  selectLocation,
-  center,
-  isLoaded,
-  loadError,
-}) => {
+const Map = ({ zoom, setNewLocation, userLocation, locations, selectLocation, center }) => {
+  const { isLoaded, loadError } = useLoadScript({
+    googleMapsApiKey: process.env.REACT_APP_MAPS_API_KEY,
+  });
+
   console.log('locations from MAP', locations, 'length: ', locations.length);
+
   const renderMap = () => {
     return (
       <GoogleMap
@@ -30,7 +29,7 @@ const Map = ({
         zoom={zoom}
         center={center || userLocation}
         options={options}
-        onClick={(e) => setNewLocation(e)}
+        onDblClick={(e) => setNewLocation(e)}
       >
         <Marker
           className="location-marker"
@@ -68,7 +67,6 @@ const Map = ({
 
 Map.defaultProps = {
   center: null,
-  loadError: undefined,
 };
 
 Map.propTypes = {
@@ -78,8 +76,6 @@ Map.propTypes = {
   locations: PropTypes.instanceOf(Array).isRequired,
   selectLocation: PropTypes.func.isRequired,
   center: PropTypes.instanceOf(Object),
-  isLoaded: PropTypes.bool.isRequired,
-  loadError: PropTypes.bool,
 };
 
 export default Map;
