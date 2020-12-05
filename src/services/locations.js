@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseUrl = 'http://localhost:3001';
+const baseUrl = 'https://herokuapp.lahinvessa.com/api/locations';
 
 let token = null;
 
@@ -10,12 +10,14 @@ const setToken = (newToken) => {
 };
 
 const getValidatedLocations = async () => {
-  const response = await axios.get(`${baseUrl}/locations`);
+  console.log(baseUrl);
+  const response = await axios.get(baseUrl);
+  console.log(response.data);
   return response.data;
 };
 
 const getPendingLocations = async () => {
-  const response = await axios.get(`${baseUrl}/pending-locations`);
+  const response = await axios.get(`${baseUrl}/pending`);
   console.log(response.data);
   return response.data;
 };
@@ -25,12 +27,12 @@ const createNewLocation = async (newLocation) => {
     headers: { Authorization: token },
   };
 
-  const response = await axios.post(`${baseUrl}/pending-locations`, newLocation, config);
+  const response = await axios.post(`${baseUrl}/pending`, newLocation, config);
   return response.data;
 };
 
 const updateLocation = async (location) => {
-  const response = await axios.put(`${baseUrl}/locations/${location.id}`, location);
+  const response = await axios.put(`${baseUrl}/${location.id}`, location);
   return response.data;
 };
 
