@@ -34,7 +34,7 @@ const Register = () => {
     };
 
     const response = await registerService.register(newUser);
-    console.log(response);
+    
     setEmail('');
     setPassword('');
     setUsername('');

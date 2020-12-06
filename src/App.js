@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Route } from 'react-router-dom';
 // import { Route, Switch } from 'react-router-dom';
 import calculateDistances from './helpers/distances';
-import Modal from './components/Modal';
+import Notification from './components/Notification';
 import Sidebar from './components/Sidebar';
 import Map from './components/Map';
 import locationService from './services/locations';
@@ -27,13 +27,13 @@ const App = () => {
   const [center, setCenter] = useState(null);
   const [showSidebar, setShowSidebar] = useState(false);
   const [user, setUser] = useState(null);
+  const [errorNotification, setErrorNotification] = useState({ message: '', show: false });
 
   useEffect(() => {
     const handlePermission = async () => {
       const result = await navigator.permissions.query({ name: 'geolocation' });
       if (result.state === 'granted') {
         navigator.geolocation.getCurrentPosition((position) => {
-          console.log(position);
           setUserLocation({
             lat: +position.coords.latitude,
             lng: +position.coords.longitude,
@@ -61,13 +61,22 @@ const App = () => {
       const locationsWithDistances = response.map((location) =>
         calculateDistances(location, userLocation)
       );
-      console.log('locations from useeffect', locationsWithDistances);
+
       setLocations(
         locations.concat(locationsWithDistances).sort((a, b) => a.distance - b.distance)
       );
     };
     getAllLocations();
-  }, [userLocation]);
+  }, []);
+
+  useEffect(() => {
+    const userLoggedIn = JSON.parse(localStorage.getItem('user'));
+
+    if (userLoggedIn) {
+      setUser(userLoggedIn);
+      locationService.setToken(userLoggedIn.token);
+    }
+  }, []);
 
   const setNewLocation = (e) => {
     if (user) {
@@ -77,8 +86,10 @@ const App = () => {
       };
       setLocations(locations.concat(newLocation));
       setNewLocationCoords(newLocation);
+      setShowInfoBar(true);
+    } else {
+      setErrorNotification({ message: 'Kirjaudu sisään lisätäksesi uuden kohteen', show: true });
     }
-    setShowInfoBar(!showInfoBar);
   };
 
   const removePlaceholderLocation = (locationToRemove) => {
@@ -101,27 +112,48 @@ const App = () => {
     }
   };
 
-  const rate = (ratedLocation) => {
+  const updateLocation = (ratedLocation) => {
     setLocations(
-      locations.map((location) => (location.id === ratedLocation.id ? ratedLocation : location))
+      locations.map((location) => (location.name === ratedLocation.name ? ratedLocation : location))
     );
   };
+
+  console.log(locations);
 
   const handleShowSidebar = () => {
     setShowSidebar(!showSidebar);
   };
 
-  const handleUser = (userLoggedIn) => {
-    setUser(userLoggedIn);
+  const handleLogin = (userLoggedIn) => {
+    if (user) {
+      localStorage.removeItem('user');
+      setUser(null);
+    } else {
+      localStorage.setItem('user', JSON.stringify(userLoggedIn));
+      setUser(userLoggedIn);
+    }
+  };
+
+  const handleShowNotification = (show) => {
+    setErrorNotification({ message: '', show });
   };
 
   return (
     <div className="app">
-      {/* <NewLocationAddedModal /> */}
-      <Sidebar handleShowSidebar={handleShowSidebar} showSidebar={showSidebar} />
-      <Navigation handleShowSidebar={handleShowSidebar} />
+      {errorNotification.show && (
+        <Notification
+          errorNotification={errorNotification}
+          handleShowNotification={handleShowNotification}
+        />
+      )}
+      <Sidebar
+        handleShowSidebar={handleShowSidebar}
+        handleLogin={handleLogin}
+        showSidebar={showSidebar}
+      />
+      <Navigation user={user} handleShowSidebar={handleShowSidebar} />
       <Route path="/login">
-        <Login handleUser={handleUser} />
+        <Login handleLogin={handleLogin} />
       </Route>
       <Route path="/register">
         <Register />
@@ -135,7 +167,7 @@ const App = () => {
           setNewLocation={setNewLocation}
           center={center}
         />
-        {showInfoBar && user && (
+        {showInfoBar && (
           <NewLocationForm
             buttonLabelAdd="Lisää vessa"
             buttonLabelCancel="Peruuta"
@@ -143,9 +175,6 @@ const App = () => {
             toggleInfoBar={toggleInfoBar}
             removePlaceholderLocation={removePlaceholderLocation}
           />
-        )}
-        {showInfoBar && !user && (
-          <Modal modalTitle="Uuden kohteen lisäys vaatii kirjautumisen" modalBody={null} />
         )}
         <NearestLocations
           locationDetails={locationDetails}
@@ -157,7 +186,7 @@ const App = () => {
           <SelectedLocation
             locationDetails={locationDetails}
             selectLocation={selectLocation}
-            rate={rate}
+            updateLocation={updateLocation}
           />
         )}
       </Route>

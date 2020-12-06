@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import loginService from '../services/login';
 import locationsService from '../services/locations';
 
-const Login = ({ handleUser }) => {
+const Login = ({ handleLogin }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -29,7 +30,7 @@ const Login = ({ handleUser }) => {
 
     if (response.token) {
       history.push('/');
-      handleUser(user);
+      handleLogin(response);
       locationsService.setToken(response.token);
     }
   };
@@ -72,6 +73,10 @@ const Login = ({ handleUser }) => {
       </form>
     </div>
   );
+};
+
+Login.propTypes = {
+  handleLogin: PropTypes.func.isRequired,
 };
 
 export default Login;

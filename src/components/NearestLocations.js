@@ -52,9 +52,6 @@ const NearestLocations = ({ locationDetails, locations }) => {
       tabIndex={0}
       className="nearest-locations-container"
       onClick={handleShowNearest}
-      // onClick={() => selectLocation()}
-      // onDrag={(e) => moveComponent(e)}
-      // draggable="true"
     >
       <div style={styles.header} className="nearest-locations-header" draggable="true">
         <div className="nearest-locations-header-name">
@@ -74,7 +71,6 @@ const NearestLocations = ({ locationDetails, locations }) => {
           {locationDetails && (
             <ExpandMoreIcon
               onClick={() => handleShowNearest()}
-              // onClick={() => selectLocation()}
               style={styles.header.itemsRight.item}
             />
           )}

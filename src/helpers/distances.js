@@ -1,7 +1,7 @@
 const toRad = (value) => (value * Math.PI) / 180;
 
 const calculateDistances = (location, userLocation) => {
-  console.log(location, userLocation);
+  
   let distance = 0;
   const R = 6371;
 

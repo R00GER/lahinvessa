@@ -8,10 +8,7 @@ import mapStyles from '../mapStyles';
 const options = {
   styles: mapStyles,
   disableDefaultUI: true,
-  // zoomControl: true,
-  // zoomControlOptions: {
-  //   position: google.maps.ControlPosition.LEFT_CENTER,
-  // },
+  gestureHandling: 'greedy',
   disableDoubleClickZoom: true,
 };
 
@@ -19,8 +16,6 @@ const Map = ({ zoom, setNewLocation, userLocation, locations, selectLocation, ce
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_MAPS_API_KEY,
   });
-
-  console.log('locations from MAP', locations, 'length: ', locations.length);
 
   const renderMap = () => {
     return (
@@ -40,7 +35,6 @@ const Map = ({ zoom, setNewLocation, userLocation, locations, selectLocation, ce
           }}
         />
         {locations.map((location) => {
-          console.log(location);
           return (
             <Marker
               key={location.id || location.lat}

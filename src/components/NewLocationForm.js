@@ -32,7 +32,7 @@ const NewLocationForm = ({
     inva: false,
     child: false,
   });
-  const [newLocation, setNewLocation] = useState({
+  const [location, setLocation] = useState({
     name: '',
     type: '',
     payable: '',
@@ -60,6 +60,7 @@ const NewLocationForm = ({
       position: 'absolute',
       bottom: 0,
       left: 0,
+      zIndex: 3,
     },
   };
 
@@ -74,52 +75,51 @@ const NewLocationForm = ({
       setServicesChecked({ ...servicesChecked, child: !servicesChecked.child });
     }
 
-    if (value === 'inva' && !newLocation.services.includes('inva')) {
-      setNewLocation({
-        ...newLocation,
-        services: newLocation.services.concat(value),
+    if (value === 'inva' && !location.services.includes('inva')) {
+      setLocation({
+        ...location,
+        services: location.services.concat(value),
       });
     }
 
-    if (value === 'inva' && newLocation.services.includes('inva')) {
-      setNewLocation({
-        ...newLocation,
-        services: newLocation.services.filter((service) => service !== value),
+    if (value === 'inva' && location.services.includes('inva')) {
+      setLocation({
+        ...location,
+        services: location.services.filter((service) => service !== value),
       });
     }
 
-    if (value === 'child' && !newLocation.services.includes('child')) {
-      setNewLocation({
-        ...newLocation,
-        services: newLocation.services.concat(value),
+    if (value === 'child' && !location.services.includes('child')) {
+      setLocation({
+        ...location,
+        services: location.services.concat(value),
       });
     }
 
-    if (value === 'child' && newLocation.services.includes('child')) {
-      setNewLocation({
-        ...newLocation,
-        services: newLocation.services.filter((service) => service !== value),
+    if (value === 'child' && location.services.includes('child')) {
+      setLocation({
+        ...location,
+        services: location.services.filter((service) => service !== value),
       });
     }
 
     if (name !== 'service') {
-      setNewLocation({
-        ...newLocation,
+      setLocation({
+        ...location,
         [name]: value,
       });
     }
   };
 
-  const addNewLocation = async (e) => {
+  const addLocation = async (e) => {
     e.preventDefault();
-    const response = await locationsService.createNewLocation(newLocation);
-    console.log(response);
+    await locationsService.createNewLocation(location);
     toggleInfoBar();
   };
 
   const resetNewLocation = () => {
-    removePlaceholderLocation({ lat: newLocation.lat, lng: newLocation.lng });
-    setNewLocation({
+    removePlaceholderLocation({ lat: location.lat, lng: location.lng });
+    setLocation({
       name: '',
       type: '',
       payable: '',
@@ -135,7 +135,7 @@ const NewLocationForm = ({
 
   return (
     <div className="infobar-container" style={styles.container}>
-      <form onSubmit={addNewLocation}>
+      <form onSubmit={addLocation}>
         <Grid container>
           <Grid item xs={12}>
             <FormLabel
@@ -153,7 +153,7 @@ const NewLocationForm = ({
               className="new-location-name-input"
               label="Nimi"
               name="name"
-              value={newLocation.name}
+              value={location.name}
               size="small"
               // style={{ backgroundColor: '#85cad4', margin: '.5rem 0 .5rem 0' }}
               onChange={(e) => handleNewLocation(e)}
@@ -175,11 +175,10 @@ const NewLocationForm = ({
                     control={<Radio size="small" style={{ color: '#fff' }} />}
                     name="type"
                     value="public"
-                    checked={newLocation.type === 'public'}
+                    checked={location.type === 'public'}
                     onChange={(e) => handleNewLocation(e)}
                     label={<WcIcon style={{ color: '#fff' }} />}
                     size="small"
-                    row
                   />
                 </Grid>
                 <Grid item xs={3}>
@@ -187,7 +186,7 @@ const NewLocationForm = ({
                     control={<Radio size="small" style={{ color: '#fff' }} />}
                     name="type"
                     value="restaurant"
-                    checked={newLocation.type === 'restaurant'}
+                    checked={location.type === 'restaurant'}
                     onChange={(e) => handleNewLocation(e)}
                     label={<RestaurantIcon style={{ color: '#fff' }} />}
                     size="small"
@@ -198,7 +197,7 @@ const NewLocationForm = ({
                     control={<Radio size="small" style={{ color: '#fff' }} />}
                     name="type"
                     value="cafe"
-                    checked={newLocation.type === 'cafe'}
+                    checked={location.type === 'cafe'}
                     onChange={(e) => handleNewLocation(e)}
                     label={<FreeBreakfastIcon style={{ color: '#fff' }} />}
                     size="small"
@@ -209,7 +208,7 @@ const NewLocationForm = ({
                     control={<Radio size="small" style={{ color: '#fff' }} />}
                     name="type"
                     value="other"
-                    checked={newLocation.type === 'other'}
+                    checked={location.type === 'other'}
                     onChange={(e) => handleNewLocation(e)}
                     label={<NotListedLocationIcon style={{ color: '#fff' }} />}
                     size="small"
@@ -263,7 +262,7 @@ const NewLocationForm = ({
                     <Radio
                       name="payable"
                       value="payable"
-                      checked={newLocation.payable === 'payable'}
+                      checked={location.payable === 'payable'}
                       onChange={(e) => handleNewLocation(e)}
                       style={{ color: '#fff' }}
                       size="small"
@@ -277,7 +276,7 @@ const NewLocationForm = ({
                     <Radio
                       name="payable"
                       value="free"
-                      checked={newLocation.payable === 'free'}
+                      checked={location.payable === 'free'}
                       onChange={(e) => handleNewLocation(e)}
                       style={{ color: '#fff' }}
                       size="small"

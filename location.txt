@@ -12,7 +12,7 @@ longitude: 25.4733916
         report(result.state);
         // setGeoLocationGranted(true);
         navigator.geolocation.getCurrentPosition((position) => {
-          console.log(position);
+          
           setCurrentLocation({
             lat: +position.coords.latitude,
             lng: +position.coords.longitude,

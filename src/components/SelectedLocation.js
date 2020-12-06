@@ -20,8 +20,9 @@ const PoopRating = withStyles({
   },
 })(Rating);
 
-const SelectedLocation = ({ locationDetails, selectLocation, rate }) => {
+const SelectedLocation = ({ locationDetails, selectLocation, updateLocation }) => {
   const [rating, setRating] = useState(locationDetails.rating || 3);
+  const [rated, setRated] = useState(false);
 
   const styles = {
     container: {
@@ -70,14 +71,15 @@ const SelectedLocation = ({ locationDetails, selectLocation, rate }) => {
   const handleRating = async (e) => {
     const ratedLocation = {
       ...locationDetails,
-      rating: +e.target.value,
+      ratings: locationDetails.ratings + 1,
+      rating: +e.target.value + locationDetails.rating,
     };
-
-    console.log('rated', ratedLocation);
 
     const response = await locationService.updateLocation(ratedLocation);
     setRating(response.rating);
-    rate(ratedLocation);
+    updateLocation(response);
+    setRated(true);
+    selectLocation(response);
   };
 
   return (
@@ -100,7 +102,7 @@ const SelectedLocation = ({ locationDetails, selectLocation, rate }) => {
           {locationDetails.payable === 'payable' ? 'Maksullinen' : 'Maksuton'}
         </div>
         {locationDetails.services && (
-          <div className="selected-location-services-container">
+          <div key={locationDetails.id} className="selected-location-services-container">
             <div className="selected-location-services-title">Lisäpalvelut</div>
             <div className="selected-locations-services-icons">
               {locationDetails.services.map((service) =>
@@ -109,7 +111,7 @@ const SelectedLocation = ({ locationDetails, selectLocation, rate }) => {
             </div>
           </div>
         )}
-        <div style={{ display: 'flex' }}>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
           {/* <div style={{ color: '#fff', marginRight: '1rem' }}>Arvioi vessa</div> */}
           {/* <div>Arvioi vessa</div> */}
           <PoopRating
@@ -117,7 +119,9 @@ const SelectedLocation = ({ locationDetails, selectLocation, rate }) => {
             value={rating}
             onChange={(e) => handleRating(e)}
             icon={<FaPoop size="1.8rem" style={{ marginRight: '.1rem' }} />}
+            disabled={rated}
           />
+          <div>{locationDetails.rating ? locationDetails.rating : 'Ei Arvioitu'}</div>
         </div>
       </div>
     </div>
@@ -131,7 +135,7 @@ SelectedLocation.defaultProps = {
 SelectedLocation.propTypes = {
   locationDetails: PropTypes.instanceOf(Object),
   selectLocation: PropTypes.func.isRequired,
-  rate: PropTypes.func.isRequired,
+  updateLocation: PropTypes.func.isRequired,
 };
 
 export default SelectedLocation;
