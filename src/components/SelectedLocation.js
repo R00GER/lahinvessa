@@ -21,7 +21,8 @@ const PoopRating = withStyles({
 })(Rating);
 
 const SelectedLocation = ({ locationDetails, selectLocation, updateLocation }) => {
-  const [rating, setRating] = useState(locationDetails.rating || 3);
+  // const [rating, setRating] = useState(locationDetails.rating || 3);
+  const [rating, setRating] = useState(null);
   const [rated, setRated] = useState(false);
 
   const styles = {
@@ -78,8 +79,8 @@ const SelectedLocation = ({ locationDetails, selectLocation, updateLocation }) =
     const response = await locationService.updateLocation(ratedLocation);
     setRating(response.rating);
     updateLocation(response);
-    setRated(true);
     selectLocation(response);
+    setRated(true);
   };
 
   return (
@@ -105,9 +106,11 @@ const SelectedLocation = ({ locationDetails, selectLocation, updateLocation }) =
           <div key={locationDetails.id} className="selected-location-services-container">
             <div className="selected-location-services-title">Lisäpalvelut</div>
             <div className="selected-locations-services-icons">
-              {locationDetails.services.map((service) =>
-                service === 'inva' ? <AccessibleIcon /> : <ChildFriendlyIcon />
-              )}
+              {locationDetails.services.map((service) => (
+                <div key={service}>
+                  {service === 'inva' ? <AccessibleIcon /> : <ChildFriendlyIcon />}
+                </div>
+              ))}
             </div>
           </div>
         )}

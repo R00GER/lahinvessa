@@ -105,18 +105,21 @@ const App = () => {
   };
 
   const selectLocation = (location) => {
-    setLocationDetails(location);
-
     if (location) {
+      setLocationDetails(location);
       setCenter({ lat: location.lat, lng: location.lng });
     }
   };
 
   const updateLocation = (ratedLocation) => {
+    console.log(ratedLocation);
     setLocations(
       locations.map((location) => (location.name === ratedLocation.name ? ratedLocation : location))
     );
+    // setLocationDetails(ratedLocation);
   };
+
+  console.log('details', locationDetails);
 
   console.log(locations);
 
