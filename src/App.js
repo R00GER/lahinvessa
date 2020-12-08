@@ -78,6 +78,13 @@ const App = () => {
     }
   }, []);
 
+  const handleErrorNotifications = (message, show) => {
+    setErrorNotification({ message, show });
+    setTimeout(() => {
+      handleErrorNotifications(null);
+    }, 5000);
+  };
+
   const setNewLocation = (e) => {
     if (user) {
       const newLocation = {
@@ -112,16 +119,10 @@ const App = () => {
   };
 
   const updateLocation = (ratedLocation) => {
-    console.log(ratedLocation);
     setLocations(
       locations.map((location) => (location.name === ratedLocation.name ? ratedLocation : location))
     );
-    // setLocationDetails(ratedLocation);
   };
-
-  console.log('details', locationDetails);
-
-  console.log(locations);
 
   const handleShowSidebar = () => {
     setShowSidebar(!showSidebar);
@@ -137,8 +138,9 @@ const App = () => {
     }
   };
 
-  const handleShowNotification = (show) => {
-    setErrorNotification({ message: '', show });
+  const logOut = () => {
+    setUser(null);
+    localStorage.removeItem('user');
   };
 
   return (
@@ -146,13 +148,14 @@ const App = () => {
       {errorNotification.show && (
         <Notification
           errorNotification={errorNotification}
-          handleShowNotification={handleShowNotification}
+          handleErrorNotifications={handleErrorNotifications}
         />
       )}
       <Sidebar
         handleShowSidebar={handleShowSidebar}
         handleLogin={handleLogin}
         showSidebar={showSidebar}
+        logOut={logOut}
       />
       <Navigation user={user} handleShowSidebar={handleShowSidebar} />
       <Route path="/login">
@@ -177,6 +180,8 @@ const App = () => {
             newLocationCoords={newLocationCoords}
             toggleInfoBar={toggleInfoBar}
             removePlaceholderLocation={removePlaceholderLocation}
+            handleErrorNotifications={handleErrorNotifications}
+            logOut={logOut}
           />
         )}
         <NearestLocations

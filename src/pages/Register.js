@@ -7,6 +7,7 @@ const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordAgain, setPasswordAgain] = useState('');
+  // const [notification, setNotification] = useState('');
 
   const handleUsername = (e) => {
     setUsername(e.target.value);
@@ -27,17 +28,28 @@ const Register = () => {
   const register = async (e) => {
     e.preventDefault();
 
-    const newUser = {
-      username,
-      email,
-      password,
-    };
+    if (password === passwordAgain) {
+      const newUser = {
+        username,
+        email,
+        password,
+      };
 
-    const response = await registerService.register(newUser);
-    
-    setEmail('');
-    setPassword('');
-    setUsername('');
+      try {
+        await registerService.register(newUser);
+        setPasswordAgain('');
+        setPassword('');
+        setEmail('');
+        setUsername('');
+      } catch (error) {
+        console.log(error.response.data);
+        // setNotification('Käyttäjätunnus on varattu');
+        setPasswordAgain('');
+        setPassword('');
+      }
+    } else {
+      // setNotification('Salasanat eivät täsmää');
+    }
   };
 
   return (

@@ -27,6 +27,8 @@ const NewLocationForm = ({
   buttonLabelAdd,
   buttonLabelCancel,
   removePlaceholderLocation,
+  handleErrorNotifications,
+  logOut,
 }) => {
   const [servicesChecked, setServicesChecked] = useState({
     inva: false,
@@ -113,8 +115,15 @@ const NewLocationForm = ({
 
   const addLocation = async (e) => {
     e.preventDefault();
-    await locationsService.createNewLocation(location);
+    try {
+      await locationsService.createNewLocation(location);
+    } catch (error) {
+      console.log(error.response.data);
+    }
+    removePlaceholderLocation({ lat: location.lat, lng: location.lng });
     toggleInfoBar();
+    handleErrorNotifications('Istuntosi on vanhentunut. Kirjaudu sisään lisätäksesi vessan.', true);
+    logOut();
   };
 
   const resetNewLocation = () => {
@@ -314,6 +323,8 @@ NewLocationForm.propTypes = {
   buttonLabelAdd: PropTypes.string.isRequired,
   buttonLabelCancel: PropTypes.string.isRequired,
   removePlaceholderLocation: PropTypes.func.isRequired,
+  handleErrorNotifications: PropTypes.func.isRequired,
+  logOut: PropTypes.func.isRequired,
 };
 
 export default NewLocationForm;

@@ -7,6 +7,7 @@ import locationsService from '../services/locations';
 const Login = ({ handleLogin }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  // const [notification, setNotification] = useState('');
 
   const history = useHistory();
 
@@ -26,12 +27,16 @@ const Login = ({ handleLogin }) => {
       password,
     };
 
-    const response = await loginService.login(user);
+    try {
+      const response = await loginService.login(user);
 
-    if (response.token) {
-      history.push('/');
-      handleLogin(response);
-      locationsService.setToken(response.token);
+      if (response.token) {
+        history.push('/');
+        handleLogin(response);
+        locationsService.setToken(response.token);
+      }
+    } catch (error) {
+      // setNotification('Virheellinen käyttäjätunnus tai salasana');
     }
   };
 

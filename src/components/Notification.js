@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 
-const Notification = ({ errorNotification, handleShowNotification }) => {
+const Notification = ({ errorNotification, handleErrorNotifications }) => {
   const styles = {
     container: {
       position: 'absolute',
@@ -41,7 +41,7 @@ const Notification = ({ errorNotification, handleShowNotification }) => {
   };
 
   const closeModal = () => {
-    handleShowNotification(false);
+    handleErrorNotifications(null, false);
   };
 
   return (
@@ -68,7 +68,7 @@ const Notification = ({ errorNotification, handleShowNotification }) => {
 
 Notification.propTypes = {
   errorNotification: PropTypes.instanceOf(Object).isRequired,
-  handleShowNotification: PropTypes.func.isRequired,
+  handleErrorNotifications: PropTypes.func.isRequired,
 };
 
 export default Notification;
