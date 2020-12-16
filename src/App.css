@@ -4,35 +4,21 @@ semi-dark: '#80BDC6'
 dark: '#0A95A8'
 */
 
-/* @font-face {
-  font-family: 'JackArmstrongBB';
-  src: url('//db.onlinewebfonts.com/t/71976204cf6d53991ececd406824ec45.eot');
-  src: url('//db.onlinewebfonts.com/t/71976204cf6d53991ececd406824ec45.eot?#iefix')
-      format('embedded-opentype'),
-    url('//db.onlinewebfonts.com/t/71976204cf6d53991ececd406824ec45.woff2') format('woff2'),
-    url('//db.onlinewebfonts.com/t/71976204cf6d53991ececd406824ec45.woff') format('woff'),
-    url('//db.onlinewebfonts.com/t/71976204cf6d53991ececd406824ec45.ttf') format('truetype'),
-    url('//db.onlinewebfonts.com/t/71976204cf6d53991ececd406824ec45.svg#JackArmstrongBB')
-      format('svg');
-} */
-
-/* .logo-text {
-  font-family: JackArmstrongBB;
-  color: '#fff';
-  text-decoration: 'none';
-  font-size: 1.5rem;
-} */
-
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+.app {
+  display: flex;
+  justify-content: center;
+}
+
 .sidebar-menu-item:hover {
   background-color: #85cad4;
 }
-
+.nearest-locations-header:focus,
 .nearest-locations-container:focus {
   outline: none;
 }

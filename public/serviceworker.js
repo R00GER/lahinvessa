@@ -1,36 +1,44 @@
-const CACHE_NAME = 'version-1';
-const urlsToCache = ['index.html', 'offline.html'];
-
 const self = this;
+const cacheVersion = 'version-1';
+const offlineURL = 'offline.html';
+const currentCache = {
+  offline: `offline-cache${cacheVersion}`,
+};
 
-// install serviceworker
-self.addEventListener('install', (event) => {
+// install
+this.addEventListener('install', (event) => {
   event.waitUntil(
-    caches
-      .open(CACHE_NAME)
-      .then((cache) => {
-        console.log('Cache opened');
-        return cache.addAll(urlsToCache);
-      })
-      .catch((err) => {
-        console.log('ERROR', err);
-      })
+    caches.open(currentCache.offline).then((cache) => {
+      return cache.addAll(['/', './offline_bg.png', offlineURL]);
+    })
   );
 });
 
-// listen requests
-self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request).then(() => {
-      return fetch(event.request).catch(() => caches.match('offline.html'));
-    })
-  );
+// fetch from cache
+this.addEventListener('fetch', (event) => {
+  if (
+    event.request.mode === 'navigate' ||
+    (event.request.method === 'GET' && event.request.headers.get('accept').includes('text/html'))
+  ) {
+    event.respondWith(
+      fetch(event.request.url).catch((error) => {
+        console.log(error);
+        return caches.match(offlineURL);
+      })
+    );
+  } else {
+    event.respondWith(
+      caches.match(event.request).then((response) => {
+        return response || fetch(event.request);
+      })
+    );
+  }
 });
 
 // activate service worker
 self.addEventListener('activate', (event) => {
   const cacheWhitelist = [];
-  cacheWhitelist.push(CACHE_NAME);
+  cacheWhitelist.push(currentCache.offline);
 
   event.waitUntil(
     caches.keys().then((cacheNames) =>

@@ -10,7 +10,6 @@ const Notification = ({ errorNotification, handleErrorNotifications }) => {
       left: '50%',
       transform: 'translate(-50%, -50%)',
       display: 'grid',
-      // flexDirection: 'column',
       gridTemplateColums: '80% 20%',
       gridTemplateRows: '2fr',
       width: '75%',

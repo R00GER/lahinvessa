@@ -11,7 +11,6 @@ const setToken = (newToken) => {
 
 const getValidatedLocations = async () => {
   const response = await axios.get(baseUrl);
-  console.log(response);
   return response.data;
 };
 
@@ -32,7 +31,6 @@ const createNewLocation = async (newLocation) => {
 
 const updateLocation = async (location) => {
   const response = await axios.put(`${baseUrl}/${location.id}`, location);
-  console.log('response from service', response.data);
   return response.data;
 };
 

@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
-// import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
 import PolicyOutlinedIcon from '@material-ui/icons/PolicyOutlined';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import ExitToAppOutlinedIcon from '@material-ui/icons/ExitToAppOutlined';
@@ -15,7 +14,7 @@ const Sidebar = ({ showSidebar, handleShowSidebar, handleLogin }) => {
       display: 'flex',
       width: '100%',
       height: '100vh',
-      zIndex: 5,
+      zIndex: 8,
     },
     body: {
       position: 'relative',
@@ -24,7 +23,6 @@ const Sidebar = ({ showSidebar, handleShowSidebar, handleLogin }) => {
       width: '80%',
       height: '100vh',
       backgroundColor: '#fff',
-      // color: '#fff',
     },
     item: {
       padding: '.7rem',

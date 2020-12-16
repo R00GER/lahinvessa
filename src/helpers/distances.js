@@ -1,7 +1,6 @@
 const toRad = (value) => (value * Math.PI) / 180;
 
 const calculateDistances = (location, userLocation) => {
-  
   let distance = 0;
   const R = 6371;
 
@@ -16,11 +15,7 @@ const calculateDistances = (location, userLocation) => {
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   distance = R * c;
 
-  if (distance < 1000) {
-    distance *= 1000;
-  }
-
-  return { ...location, distance };
+  return { ...location, distance: +(distance * 1000).toFixed(1) || 0 };
 };
 
 export default calculateDistances;

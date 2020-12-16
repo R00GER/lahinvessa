@@ -3,12 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import MenuIcon from '@material-ui/icons/Menu';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-// import img1 from '../assets/image0.png';
-// import img2 from '../assets/image1.png';
-// import img3 from '../assets/image2.png';
-// import img4 from '../assets/image3.png';
-// import img5 from '../assets/img4.png';
-import img9 from '../assets/img9.png';
+import logo from '../assets/logo.png';
 
 const Navigation = ({ handleShowSidebar, user }) => {
   const styles = {
@@ -24,15 +19,16 @@ const Navigation = ({ handleShowSidebar, user }) => {
       width: '100%',
       height: '8vh',
       padding: '0 .5rem 0 .5rem',
-      backgroundColor: '#85cad4',
-      zIndex: 1,
-      opacity: '.85',
+      // backgroundColor: '#85cad4',
+      zIndex: 6,
     },
     menuIcon: {
       gridColumnStart: 1,
       gridColumnEnd: 2,
       justifySelf: 'start',
-      color: '#fff',
+      color: '#0A95A8',
+      // color: '#8127BA',
+      zIndex: 6,
     },
     logoContainer: {
       gridColumnStart: 2,
@@ -41,13 +37,14 @@ const Navigation = ({ handleShowSidebar, user }) => {
     },
     logo: {
       width: '150px',
-      zIndex: 50,
+      zIndex: 8,
     },
     login: {
       gridColumnStart: 3,
       gridColumnEnd: 4,
       justifySelf: 'end',
-      color: '#fff',
+      // color: '#80BDC6',
+      color: '#0A95A8',
     },
   };
 
@@ -55,7 +52,7 @@ const Navigation = ({ handleShowSidebar, user }) => {
     <div className="navigation-container" style={styles.container}>
       <MenuIcon onClick={handleShowSidebar} style={styles.menuIcon} fontSize="large" />
       <Link to="/" style={styles.logoContainer}>
-        <img src={img9} alt="Logo" style={styles.logo} />
+        <img src={logo} alt="Logo" style={styles.logo} />
       </Link>
       {!user && (
         <Link to="/login" style={styles.login}>

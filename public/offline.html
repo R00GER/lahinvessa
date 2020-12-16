@@ -1,11 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
-<body>
-  <div>Offline</div>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Lähin vessa</title>
+  </head>
+  <body style="background: url(./offline_bg.png) no-repeat center center fixed">
+    <div
+      style="
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: black;
+        opacity: 0.5;
+      "
+    ></div>
+    <div
+      style="
+        position: absolute;
+        text-align: center;
+        width: 70%;
+        background-color: #fff;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        padding: 20px;
+        border-radius: 5px;
+      "
+    >
+      <div
+        style="
+          margin-bottom: 20px;
+          color: #383838;
+          font-family: Arial, sans-serif;
+          font-weight: 300;
+        "
+      >
+        Nähdäksesi lähimmät vessat, sinulla tulee olla toimiva internet-yhteys
+      </div>
+      <button
+        style="
+          font-family: Arial, sans-serif;
+          background: linear-gradient(to right top, #8127ba, #7547c0, #6d5cc1, #6c6dbf, #717cb9);
+          border: none;
+          border-radius: 5px;
+          padding: 10px 20px 10px 20px;
+          color: #fff;
+        "
+        onclick="window.location.reload();"
+      >
+        Yritä uudelleen
+      </button>
+    </div>
+  </body>
 </html>
